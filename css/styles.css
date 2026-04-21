@@ -91,3 +91,9 @@ iframe {
 .no-scroll {
   overflow: hidden;
 }
+
+#detention-scale-vis{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
