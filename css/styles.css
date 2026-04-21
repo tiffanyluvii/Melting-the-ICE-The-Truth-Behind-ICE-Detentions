@@ -1,3 +1,7 @@
+:root{
+  --main-red: rgb(190, 44, 44);
+}
+
 .noticia-text-regular {
   font-family: "Noticia Text", serif;
   font-weight: 400;
