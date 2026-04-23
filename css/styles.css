@@ -1,5 +1,6 @@
 :root{
   --main-red: rgb(190, 44, 44);
+  --main-blue: rgb(91, 133, 170);
 }
 
 .noticia-text-regular {
@@ -44,11 +45,24 @@ h1{
   min-height: 100vh;
   padding: 40px;
   font-family: "Noticia Text", serif;
+  position: relative;
+  overflow: hidden;
 }
 
 #section-1 p {
   max-width: 700px;
   margin-bottom: 20px;
+  line-height: 300%;
+  margin-top: 200px;
+  margin-bottom: 400px;
+}
+
+.floating-word {
+  position: absolute;
+  font-size: 30px;
+  opacity: 1;
+  transition: opacity 1s;
+  color: var(--main-red)
 }
 
 iframe {
@@ -57,6 +71,7 @@ iframe {
 
 #image-animation {
   height: 100vh; 
+  margin-top: 200px;
   position: relative;
 }
 
