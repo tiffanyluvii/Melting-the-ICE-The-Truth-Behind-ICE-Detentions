@@ -80,9 +80,46 @@ export function runSection2(biden_data, trump_data, main_red, main_blue){
         .attr("stroke-width", 2)
         .attr("d", trump_line);
 
+    const bidenTransitionPoint = biden_detention_map[biden_detention_map.length - 1];
+    const trumpTransitionPoint = trump_detention_map[0];
+    if (bidenTransitionPoint && trumpTransitionPoint) {
+        const transitionDate = trumpTransitionPoint.date;
+        const transitionX = x_scale(transitionDate);
+        const bidenY = y_scale(bidenTransitionPoint.count);
+        const trumpY = y_scale(trumpTransitionPoint.count);
+        const transitionY = (bidenY + trumpY) / 2;
+
+        // Visual handoff marker between both administrations at the cutoff month.
+        scale_g.append("line")
+            .attr("x1", transitionX)
+            .attr("y1", bidenY)
+            .attr("x2", transitionX)
+            .attr("y2", trumpY)
+            .attr("stroke", main_red)
+            .attr("stroke-width", 1.8)
+            .attr("stroke-dasharray", "4,4")
+            .attr("opacity", 0.9);
+
+        scale_g.append("circle")
+            .attr("cx", transitionX)
+            .attr("cy", transitionY)
+            .attr("r", 4.5)
+            .attr("fill", main_red);
+
+        scale_g.append("text")
+            .attr("x", transitionX + 12)
+            .attr("y", transitionY + 20)
+            .attr("class", "transition-label")
+            .style("fill", main_red)
+            .style("font-size", "12px")
+            .style("font-weight", "700")
+            .text("Trump's Presidency Begins");
+    }
+
 
     const scale_x_axis = d3.axisBottom(x_scale)
     scale_g.append('g')
+        .attr('class', 'x-axis')
         .attr('transform', `translate(0,${chartHeight})`)
         .call(scale_x_axis);
 
@@ -95,7 +132,7 @@ export function runSection2(biden_data, trump_data, main_red, main_blue){
         .attr('x', chartWidth / 2 + 20)
         .attr('y', chartHeight + 40)
         .style('text-anchor', 'middle')
-        .style("font", "noticia")
+        .style("font-family", "\"Noticia Text\", serif")
         .text('Years');
 
     scale_g.append('text')
@@ -104,7 +141,7 @@ export function runSection2(biden_data, trump_data, main_red, main_blue){
         .attr('x', -chartHeight / 2)
         .attr('y', -60)
         .style('text-anchor', 'middle')
-        .style("font", "noticia")
+        .style("font-family", "\"Noticia Text\", serif")
         .text('ICE Administrative Arrests');
 
     // legend
@@ -117,7 +154,7 @@ export function runSection2(biden_data, trump_data, main_red, main_blue){
         ];
 
     const legend = detention_scale_svg.append("g")
-        .attr("transform", "translate(800,0)");
+        .attr("transform", "translate(800, 0)");
 
     legend.selectAll("rect")
         .data(legendData)
@@ -136,6 +173,6 @@ export function runSection2(biden_data, trump_data, main_red, main_blue){
         .attr("y", (d, i) => i * 20 + 10)
         .text(d => d.label)
         .style("font-size", "12px")
-        .style("font", "noticia")
+        .style("font-family", "\"Noticia Text\", serif")
         .attr("alignment-baseline", "middle");   
 }
