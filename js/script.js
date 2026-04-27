@@ -1,6 +1,5 @@
 import { showWords, runImagesAndAudio } from "./section1.js"
 import { runSection2 } from "./section2.js"
-import { runSection7 } from "./section7.js"
 
 // Load the CSVs and other important attributes
 const parseDate = d3.timeParse("%Y-%m-%d")
@@ -28,7 +27,3 @@ runImagesAndAudio()
 // Section 2: Scale of Detention Between Presidency
 runSection2(biden_data, trump_data, main_red, main_blue)
 
-
-// Section 7: Security Risk Labels
-const all_data = [...biden_data, ...trump_data];
-runSection7(all_data)
