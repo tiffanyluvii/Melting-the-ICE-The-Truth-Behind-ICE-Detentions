@@ -8,7 +8,7 @@ export function runSection2(biden_data, trump_data, main_red, main_blue){
     const detention_scale_svg = d3.select('#detention-scale-vis').append("svg").attr("width", width).attr("height", height);
     const scale_g = detention_scale_svg.append("g").attr("transform", "translate(100,50)").attr("width", chartWidth).attr("height", chartHeight);
 
-    const startCutoff = new Date("2025-01-01")
+    let startCutoff = new Date("2025-01-01")
     const biden_filtered = biden_data.filter(d => d.date <= startCutoff)
 
     const biden_detention_map = d3.rollups(
@@ -24,6 +24,7 @@ export function runSection2(biden_data, trump_data, main_red, main_blue){
 
     console.log(biden_detention_map)
 
+    startCutoff = new Date("2025-02-01")
     const endCutoff = new Date("2026-03-01")
     const trump_filtered = trump_data.filter(d => d.date >= startCutoff && d.date <= endCutoff)
 
