@@ -461,6 +461,153 @@ iframe {
   stroke: rgba(0, 0, 0, 0.25);
 }
 
+#section-4 {
+  font-family: "Noticia Text", serif;
+  padding: 80px 0 120px;
+  text-align: center;
+}
+
+.section4-layout {
+  display: grid;
+  grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.section4-copy {
+  position: relative;
+  text-align: center;
+}
+
+.section4-step {
+  min-height: 72vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  opacity: 0.35;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.section4-step.is-active {
+  opacity: 1;
+  transform: translateY(-4px);
+}
+
+.section4-kicker {
+  margin: 0 0 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.78rem;
+  color: #7b7b72;
+}
+
+.section4-step h3 {
+  margin: 0 0 12px;
+  font-size: clamp(1.5rem, 2.2vw, 2.35rem);
+  line-height: 1.2;
+}
+
+.section4-body {
+  margin: 0;
+  line-height: 1.9;
+  font-size: 1rem;
+}
+
+.section4-vis {
+  position: sticky;
+  top: 0;
+  min-height: 100vh;
+  align-self: start;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.section4-chart-wrap {
+  width: 100%;
+}
+
+.section4-chart-wrap svg {
+  width: auto;
+  max-width: 100%;
+  height: min(80vh, 760px);
+  display: block;
+  margin: 0 auto;
+}
+
+.section4-title {
+  font-size: 28px;
+  font-weight: 700;
+  fill: #1f1f1b;
+  font-family: "Noticia Text", serif;
+}
+ 
+.section4-subtitle {
+  font-size: 15px;
+  fill: #4b4b45;
+  font-family: "Noticia Text", serif;
+}
+ 
+.section4-annotation text {
+  font-size: 13px;
+  fill: #2e2e29;
+  font-family: "Noticia Text", serif;
+}
+ 
+.section4-grid .tick line {
+  stroke: rgba(31, 31, 27, 0.12);
+}
+ 
+.section4-grid .domain,
+.section4-y-axis .domain,
+.section4-x-axis .domain {
+  display: none;
+}
+ 
+.section4-y-axis text,
+.section4-x-axis text,
+.section4-axis-label,
+.section4-value {
+  font-family: "Noticia Text", serif;
+}
+ 
+.section4-y-axis text,
+.section4-x-axis text {
+  fill: #5a5a54;
+  font-size: 13px;
+}
+ 
+.section4-axis-label {
+  fill: #2c2c28;
+  font-size: 14px;
+  font-weight: 700;
+}
+ 
+.section4-value {
+  font-size: 12px;
+  font-weight: 700;
+}
+ 
+.section4-bar {
+  cursor: default;
+}
+ 
+.section4-line {
+  fill: none;
+}
+ 
+.section4-dot {
+  cursor: default;
+}
+ 
+.section4-legend text {
+  font-family: "Noticia Text", serif;
+  font-size: 11px;
+  fill: #5a5a54;
+}
+
 #section-7 {
   font-family: "Noticia Text", serif;
   padding: 80px 0 120px;

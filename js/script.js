@@ -1,6 +1,7 @@
 import { showWords, runImagesAndAudio } from "./section1.js"
 import { runSection2 } from "./section2.js"
 import { runSection3 } from "./section3.js"
+import { runSection4 } from "./section4.js"
 import { runSection7 } from "./section7.js"
 
 // Load the CSVs and other important attributes
@@ -33,6 +34,9 @@ runSection2(biden_data, trump_data, main_red, main_blue)
 // Section 3: Origin, Citizenship, and Departure Pathways
 runSection3(trump_data, world_geojson)
 
+
+// Section 4: ICE Apprension Methods Change Over Time
+runSection4()
 
 // Section 7: Security Risk Labels
 const all_data = [...biden_data, ...trump_data];
