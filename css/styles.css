@@ -88,8 +88,13 @@ h1{
 #section-1 p {
   max-width: 760px;
   line-height: 2.2;
-  margin-top: 300px;
-  margin-bottom: 300px;
+  margin-top: 100px;
+  margin-bottom: 100px;
+}
+
+#comic{
+  width: 75%;
+  height: 75%;
 }
 
 .story-kicker {
