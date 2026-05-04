@@ -343,9 +343,6 @@ function syncNarrative(copyHost, steps) {
         .attr("class", "section7-step")
         .attr("data-section7-step", (_, index) => index);
 
-    entered.append("p")
-        .attr("class", "section7-kicker");
-
     entered.append("h3");
 
     entered.append("p")
@@ -353,9 +350,6 @@ function syncNarrative(copyHost, steps) {
 
     const merged = entered.merge(articles)
         .attr("data-section7-step", (_, index) => index);
-
-    merged.select(".section7-kicker")
-        .text((_, index) => `Step ${index + 1}`);
 
     merged.select("h3")
         .text(d => d.title);

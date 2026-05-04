@@ -112,14 +112,14 @@ export function runImagesAndAudio()
         window.addEventListener("scroll", () => {
         const rect = section.getBoundingClientRect();
 
-        if (rect.top <= 0 && !locked) { 
+        if (rect.top <= 20 && !locked) { 
             document.body.classList.add("no-scroll");
 
                 locked = true
                 // simulate animation time
                 setTimeout(() => {
                     document.body.classList.remove("no-scroll");
-                }, 3000);
+                }, 12000);
         }
     });
 
@@ -159,7 +159,7 @@ export function runImagesAndAudio()
                     lastImage.addEventListener("transitionend", onFadeInComplete);
                 }
 
-            }, i * 500);
+            }, i * 2000);
         });
     }
 
@@ -170,7 +170,7 @@ export function runImagesAndAudio()
         runAnimation();
         }
     });
-    }, {threshold: 0.6
+    }, {threshold: 0.8
     });
 
     observer.observe(section)

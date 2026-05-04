@@ -413,15 +413,12 @@ function syncNarrative(copyHost, steps) {
         .append("article")
         .attr("class", "section4-step")
         .attr("data-section4-step", (_, i) => i);
-
-    entered.append("p").attr("class", "section4-kicker");
     entered.append("h3");
     entered.append("p").attr("class", "section4-body");
 
     const merged = entered.merge(articles)
         .attr("data-section4-step", (_, i) => i);
 
-    merged.select(".section4-kicker").text((_, i) => `Step ${i + 1}`);
     merged.select("h3").text(d => d.title);
     merged.select(".section4-body").text(d => d.subtitle);
 }

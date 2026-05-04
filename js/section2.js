@@ -5,7 +5,13 @@ export function runSection2(biden_data, trump_data, main_red, main_blue){
     const chartWidth = 800;
     const chartHeight = 300;
 
-    const detention_scale_svg = d3.select('#detention-scale-vis').append("svg").attr("width", width).attr("height", height);
+    const detention_scale_svg = d3.select("#detention-scale-vis")
+        .append("svg")
+        .attr("class", "section-2-chart-svg")
+        .attr("viewBox", `0 0 ${width} ${height}`)
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .attr("role", "img")
+        .attr("aria-label", "Line chart comparing monthly ICE administrative arrests under Biden and Trump.");
     const scale_g = detention_scale_svg.append("g").attr("transform", "translate(100,50)").attr("width", chartWidth).attr("height", chartHeight);
 
     let startCutoff = new Date("2025-01-01")

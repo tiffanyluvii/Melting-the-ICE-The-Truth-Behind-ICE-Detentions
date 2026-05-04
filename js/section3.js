@@ -26,6 +26,7 @@ export function runSection3(trumpData, worldGeoJson) {
     const baseMonthKey = monthKeys[0];
     const formatMonthLabel = d3.timeFormat("%b %Y");
     const countryLookup = buildCountryLookup(geo.features);
+    const normToDisplay = buildNormToDisplayName(geo.features);
     const byMonthBirth = summarizeCountryCountsByMonth(trumpData, "birth_country", monthKeys, countryLookup);
     const byMonthCitizenship = summarizeCountryCountsByMonth(trumpData, "citizenship_country", monthKeys, countryLookup);
     const mismatchByMonth = summarizeMismatchFlowsByMonth(trumpData, monthKeys, countryLookup);
@@ -38,7 +39,34 @@ export function runSection3(trumpData, worldGeoJson) {
     const innerWidth = width - mapMargin.left - mapMargin.right;
     const innerHeight = height - mapMargin.top - mapMargin.bottom;
 
-    structure.chartHost.selectAll("*").remove();
+    structure.chartHost.selectAll("svg").remove();
+
+    const tooltipHost = structure.tooltipHost;
+    tooltipHost.selectAll("*").remove();
+    const tooltip = tooltipHost.append("div").attr("class", "section3-tooltip");
+    const formatCount = d3.format(",");
+
+    function displayCountry(norm) {
+        if (!norm || norm === "__unknown") {
+            return "Unknown";
+        }
+        return normToDisplay.get(norm) ?? titleCaseNorm(norm);
+    }
+
+    function hideTooltip() {
+        tooltip.style("opacity", 0);
+    }
+
+    function positionTooltip(event) {
+        const bounds = structure.chartHost.node()?.getBoundingClientRect();
+        if (!bounds) {
+            return;
+        }
+        tooltip
+            .style("opacity", 1)
+            .style("left", `${event.clientX - bounds.left + 14}px`)
+            .style("top", `${event.clientY - bounds.top + 14}px`);
+    }
 
     const svg = structure.chartHost
         .append("svg")
@@ -77,15 +105,9 @@ export function runSection3(trumpData, worldGeoJson) {
         .attr("class", "section3-ui")
         .attr("transform", `translate(${mapMargin.left}, 94)`);
 
-    uiGroup.append("text")
-        .attr("class", "section3-year-label")
-        .attr("x", 0)
-        .attr("y", 22)
-        .text("Month");
-
     const yearValue = uiGroup.append("text")
         .attr("class", "section3-year-value")
-        .attr("x", 70)
+        .attr("x", 0)
         .attr("y", 22)
         .text(formatMonthLabel(new Date(`${baseMonthKey}-01T00:00:00`)));
 
@@ -99,7 +121,7 @@ export function runSection3(trumpData, worldGeoJson) {
     sliderHost.append("label")
         .attr("class", "section3-slider-label")
         .attr("for", "section3-year-slider")
-        .text("Slide through months");
+        .text("Slide through different dates");
 
     const slider = sliderHost.append("input")
         .attr("id", "section3-year-slider")
@@ -123,6 +145,26 @@ export function runSection3(trumpData, worldGeoJson) {
         .append("path")
         .attr("class", "section3-country")
         .attr("d", path);
+
+    countries
+        .on("mouseenter mousemove", function (event, d) {
+            if (activeStep === 2) {
+                return;
+            }
+            const currentMonthKey = monthKeys[activeYearIndex];
+            const map = activeStep === 0
+                ? byMonthBirth.get(currentMonthKey) ?? new Map()
+                : byMonthCitizenship.get(currentMonthKey) ?? new Map();
+            const norm = d.properties.__normName;
+            const count = map.get(norm) ?? 0;
+            const name = displayCountry(norm);
+            tooltip.html(`
+                <strong>${escapeHtml(name)}</strong>
+                <span>${formatCount(count)} detainee${count === 1 ? "" : "s"}</span>
+            `);
+            positionTooltip(event);
+        })
+        .on("mouseleave", hideTooltip);
 
     const maxHeatCount = d3.max([
         d3.max(Array.from(byMonthBirth.values()), v => d3.max(v.values())),
@@ -191,19 +233,16 @@ export function runSection3(trumpData, worldGeoJson) {
     const stepConfig = [
         {
             title: "Where are detainees originally from?",
-            subtitle: "Heat map uses `birth_country`. Use the slider to see month-by-month changes in 2025-2026.",
             metric: "birth",
             showFlows: false
         },
         {
             title: "How does citizenship-based geography compare?",
-            subtitle: "Now the same monthly slider updates the map using `citizenship_country`.",
             metric: "citizenship",
             showFlows: false
         },
         {
             title: "Where do nationality and departure diverge?",
-            subtitle: "For rows where `departure_country` differs from `citizenship_country`, each line links citizenship to departure.",
             metric: "citizenship",
             showFlows: true
         }
@@ -212,6 +251,7 @@ export function runSection3(trumpData, worldGeoJson) {
     const stepNodes = structure.copyHost.selectAll("[data-section3-step]").nodes();
     let activeStep = 0;
     let activeYearIndex = 0;
+    let prevStepForTooltip = 0;
 
     function update() {
         const currentMonthKey = monthKeys[activeYearIndex];
@@ -221,7 +261,6 @@ export function runSection3(trumpData, worldGeoJson) {
         sliderValue.text(formatMonthLabel(currentMonthDate));
 
         title.text(step.title);
-        subtitle.text(step.subtitle);
         wrapSvgText(title, 760, 1.12);
         wrapSvgText(subtitle, 760, 1.25);
 
@@ -240,7 +279,7 @@ export function runSection3(trumpData, worldGeoJson) {
 
         const flowData = step.showFlows ? (mismatchByMonth.get(currentMonthKey) ?? []) : [];
 
-        const flowJoin = flowLayer.selectAll(".section3-flow")
+        const flowJoin = flowLayer.selectAll("g.section3-flow-group")
             .data(flowData, d => `${d.from}->${d.to}`);
 
         flowJoin.exit()
@@ -249,18 +288,80 @@ export function runSection3(trumpData, worldGeoJson) {
             .style("opacity", 0)
             .remove();
 
-        flowJoin.enter()
-            .append("path")
+        const flowEnter = flowJoin.enter()
+            .append("g")
+            .attr("class", "section3-flow-group");
+
+        flowEnter.append("path")
             .attr("class", "section3-flow")
+            .attr("fill", "none")
+            .attr("stroke-linecap", "round")
+            .attr("pointer-events", "none")
             .attr("d", d => buildArcPath(centroids.get(d.from), centroids.get(d.to)))
-            .style("opacity", 0)
-            .merge(flowJoin)
+            .style("opacity", 0);
+
+        flowEnter.append("path")
+            .attr("class", "section3-flow-hit")
+            .attr("fill", "none")
+            .attr("stroke", "rgba(0,0,0,0.01)")
+            .attr("stroke-width", 16)
+            .attr("stroke-linecap", "round")
+            .attr("d", d => buildArcPath(centroids.get(d.from), centroids.get(d.to)))
+            .style("opacity", 0);
+
+        const flowMerged = flowEnter.merge(flowJoin);
+
+        flowMerged.select(".section3-flow")
             .transition()
             .duration(700)
             .ease(d3.easeCubicInOut)
             .attr("stroke-width", d => flowWidthScale(d.count))
             .attr("d", d => buildArcPath(centroids.get(d.from), centroids.get(d.to)))
             .style("opacity", step.showFlows ? 0.72 : 0);
+
+        flowMerged.select(".section3-flow-hit")
+            .on("mouseenter mousemove", function (event, d) {
+                if (!step.showFlows) {
+                    return;
+                }
+                const cit = escapeHtml(displayCountry(d.from));
+                const dep = escapeHtml(displayCountry(d.to));
+                const rows = d.birthBreakdown ?? [];
+                let birthLine;
+                if (rows.length === 0) {
+                    birthLine = "Unknown";
+                } else if (rows.length === 1 && rows[0].n === d.count) {
+                    birthLine = escapeHtml(displayCountry(rows[0].birth));
+                } else if (rows.length <= 4) {
+                    birthLine = rows.map(({ birth, n }) =>
+                        `${escapeHtml(displayCountry(birth))} (${formatCount(n)})`
+                    ).join(", ");
+                } else {
+                    birthLine = `${rows.slice(0, 3).map(({ birth, n }) =>
+                        `${escapeHtml(displayCountry(birth))} (${formatCount(n)})`
+                    ).join(", ")} … +${rows.length - 3} more`;
+                }
+                tooltip.html(`
+                    <strong>Route · ${formatCount(d.count)} detainee${d.count === 1 ? "" : "s"}</strong>
+                    <span><b>Birth:</b> ${birthLine}</span>
+                    <span><b>Citizenship:</b> ${cit}</span>
+                    <span><b>Departure:</b> ${dep}</span>
+                `);
+                positionTooltip(event);
+            })
+            .on("mouseleave", hideTooltip)
+            .transition()
+            .duration(700)
+            .ease(d3.easeCubicInOut)
+            .attr("d", d => buildArcPath(centroids.get(d.from), centroids.get(d.to)))
+            .style("opacity", step.showFlows ? 1 : 0)
+            .style("pointer-events", step.showFlows ? "stroke" : "none")
+            .style("cursor", step.showFlows ? "crosshair" : "default");
+
+        if (activeStep !== prevStepForTooltip) {
+            hideTooltip();
+            prevStepForTooltip = activeStep;
+        }
 
         structure.copyHost.selectAll("[data-section3-step]")
             .classed("is-active", (_, i) => i === activeStep);
@@ -316,15 +417,27 @@ function buildSection3Markup(section) {
             .attr("class", "section3-controls")
             .attr("data-section3-controls", "");
 
-        vis.append("div")
+        const chartWrap = vis.append("div")
             .attr("class", "section3-chart-wrap")
             .attr("data-section3-chart", "");
+
+        chartWrap.append("div")
+            .attr("class", "section3-tooltip-host")
+            .attr("data-section3-tooltip", "");
+    }
+
+    const chartWrap = section.select("[data-section3-chart]");
+    if (!chartWrap.empty() && chartWrap.select("[data-section3-tooltip]").empty()) {
+        chartWrap.insert("div", ":first-child")
+            .attr("class", "section3-tooltip-host")
+            .attr("data-section3-tooltip", "");
     }
 
     return {
         copyHost: section.select("[data-section3-copy]"),
         chartHost: section.select("[data-section3-chart]"),
-        controlsHost: section.select("[data-section3-controls]")
+        controlsHost: section.select("[data-section3-controls]"),
+        tooltipHost: section.select("[data-section3-tooltip]")
     };
 }
 
@@ -333,17 +446,17 @@ function syncNarrative(copyHost) {
         {
             kicker: "Step 1",
             title: "Birth Country Heat Map",
-            body: "Start with country of birth to see where detainees mostly come from."
+            body: "We first begin with the following map that depicts the ratio of detainee born in a specific country."
         },
         {
             kicker: "Step 2",
             title: "Citizenship Heat Map",
-            body: "As you keep scrolling, the same yearly slider now updates citizenship geography."
+            body: "As you keep scrolling, the same yearly slider now updates to show the citizenship geography for each detainee."
         },
         {
             kicker: "Step 3",
             title: "Citizenship to Departure Paths",
-            body: "Where departure differs from citizenship, lines reveal cross-country routing patterns."
+            body: "Each line shows a departure country that has no relevance to the detainee as it doesn't match either their birth country or citizenship country. Ideally, the detainee shouldn't be deported to an unfamiliar country."
         }
     ];
 
@@ -364,7 +477,6 @@ function syncNarrative(copyHost) {
     const merged = entered.merge(articles)
         .attr("data-section3-step", (_, i) => i);
 
-    merged.select(".section3-kicker").text(d => d.kicker);
     merged.select("h3").text(d => d.title);
     merged.select(".section3-body").text(d => d.body);
 }
@@ -398,6 +510,7 @@ function summarizeMismatchFlowsByMonth(rows, monthKeys, countryLookup) {
             return;
         }
 
+        const birth = resolveCountryName(row.birth_country, countryLookup);
         const citizenship = resolveCountryName(row.citizenship_country, countryLookup);
         const departure = resolveCountryName(row.departure_country, countryLookup);
 
@@ -405,17 +518,26 @@ function summarizeMismatchFlowsByMonth(rows, monthKeys, countryLookup) {
             return;
         }
 
-        const key = `${citizenship}|${departure}`;
-        flowMonth.set(key, (flowMonth.get(key) ?? 0) + 1);
+        const arcKey = `${citizenship}|${departure}`;
+        const birthKey = birth ?? "__unknown";
+        if (!flowMonth.has(arcKey)) {
+            flowMonth.set(arcKey, { count: 0, birthCounts: new Map() });
+        }
+        const agg = flowMonth.get(arcKey);
+        agg.count += 1;
+        agg.birthCounts.set(birthKey, (agg.birthCounts.get(birthKey) ?? 0) + 1);
     });
 
     const result = new Map();
     byMonth.forEach((flowMap, monthKey) => {
         result.set(
             monthKey,
-            Array.from(flowMap, ([key, count]) => {
+            Array.from(flowMap, ([key, agg]) => {
                 const [from, to] = key.split("|");
-                return { from, to, count };
+                const birthBreakdown = Array.from(agg.birthCounts.entries())
+                    .map(([birth, n]) => ({ birth, n }))
+                    .sort((a, b) => b.n - a.n);
+                return { from, to, count: agg.count, birthBreakdown };
             }).sort((a, b) => b.count - a.count).slice(0, 140)
         );
     });
@@ -461,6 +583,34 @@ function buildCountryLookup(features) {
         }
     });
     return map;
+}
+
+function buildNormToDisplayName(features) {
+    const map = new Map();
+    features.forEach(feature => {
+        const key = feature.properties.__normName;
+        const label = feature.properties?.name ?? key;
+        if (key) {
+            map.set(key, label);
+        }
+    });
+    return map;
+}
+
+function titleCaseNorm(norm) {
+    return String(norm || "")
+        .split(/\s+/)
+        .filter(Boolean)
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+}
+
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
 }
 
 function resolveCountryName(raw, countryLookup) {
