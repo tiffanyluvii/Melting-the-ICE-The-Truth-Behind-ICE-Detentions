@@ -88,8 +88,13 @@ h1{
 #section-1 p {
   max-width: 760px;
   line-height: 2.2;
-  margin-top: 100px;
-  margin-bottom: 100px;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+
+#section-1 img {
+  margin-top: 50px;
+  margin-bottom: 50px;
 }
 
 #comic{
