@@ -57,6 +57,7 @@ export function runSection2(biden_data, trump_data, main_red, main_blue){
         d3.max(trump_detention_map, d => d.count)
         ]);
 
+
     const x_scale = d3.scaleTime()
         .domain(combined_x_extent)
         .range([0, chartWidth]);
@@ -118,37 +119,43 @@ export function runSection2(biden_data, trump_data, main_red, main_blue){
             .attr("y", transitionY + 20)
             .attr("class", "transition-label")
             .style("fill", main_red)
-            .style("font-size", "12px")
+            .style("font-size", "18px")
             .style("font-weight", "700")
             .text("Trump's Presidency Begins");
     }
 
 
-    const scale_x_axis = d3.axisBottom(x_scale)
+    const formatDate = d3.timeFormat("%m/%y");
+
+    const scale_x_axis = d3.axisBottom(x_scale).tickFormat(formatDate)
     scale_g.append('g')
         .attr('class', 'x-axis')
+        .style("font-size", "18px")
         .attr('transform', `translate(0,${chartHeight})`)
         .call(scale_x_axis);
 
     const scale_y_axis = d3.axisLeft(y_scale).ticks(10)
     scale_g.append('g')
         .attr('class', 'y-axis')
+        .style("font-size", "18px")
         .call(scale_y_axis);
 
     scale_g.append("text").attr('class', 'axis-label')
         .attr('x', chartWidth / 2 + 20)
-        .attr('y', chartHeight + 40)
+        .attr('y', chartHeight + 60)
         .style('text-anchor', 'middle')
         .style("font-family", "\"Noticia Text\", serif")
-        .text('Years');
+        .style("font-size", "18px")
+        .text('Date (MM/YY)');
 
     scale_g.append('text')
         .attr('class', 'axis-label')
         .attr('transform', 'rotate(-90)')
         .attr('x', -chartHeight / 2)
-        .attr('y', -60)
+        .attr('y', -80)
         .style('text-anchor', 'middle')
         .style("font-family", "\"Noticia Text\", serif")
+        .style("font-size", "18px")
         .text('ICE Administrative Arrests');
 
     // legend
@@ -179,7 +186,7 @@ export function runSection2(biden_data, trump_data, main_red, main_blue){
         .attr("x", 18)
         .attr("y", (d, i) => i * 20 + 10)
         .text(d => d.label)
-        .style("font-size", "12px")
+        .style("font-size", "18px")
         .style("font-family", "\"Noticia Text\", serif")
         .attr("alignment-baseline", "middle");   
 }
