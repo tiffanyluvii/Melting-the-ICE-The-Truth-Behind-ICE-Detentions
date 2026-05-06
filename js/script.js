@@ -4,6 +4,7 @@ import { runSection3 } from "./section3.js"
 import { runSection4 } from "./section4.js"
 import { runSection5 } from "./section5.js"
 import { runSection7 } from "./section7.js"
+import { runSection8 } from "./section8.js"
 
 // Load the CSVs and other important attributes
 const parseDate = d3.timeParse("%Y-%m-%d")
@@ -44,3 +45,6 @@ runSection5(all_data)
 
 // Section 7: Security Risk Labels
 runSection7(all_data)
+
+// Section 8: Ending / Impact
+runSection8()
