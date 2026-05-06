@@ -751,6 +751,90 @@ iframe {
   text-align: center;
 }
 
+#section-8 {
+  font-family: "Noticia Text", serif;
+  color: var(--beige-text);
+  padding: 90px 0 120px;
+  text-align: center;
+}
+
+#section-8 .section-heading-wrap {
+  margin-bottom: 18px;
+}
+
+.section8-intro {
+  width: min(760px, 86%);
+  margin: 0 auto 46px;
+  color: #4b4b45;
+  font-size: clamp(1.04rem, 1.4vw, 1.18rem);
+  line-height: 1.9;
+}
+
+.section8-stat-grid {
+  width: min(1260px, 92%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(24px, 3vw, 42px);
+}
+
+.section8-stat-card {
+  grid-column: span 2;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(28px, 3vw, 42px);
+  border-top: 3px solid var(--main-red);
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 14px 44px rgba(31, 31, 27, 0.08);
+  text-align: left;
+  will-change: opacity, transform;
+}
+
+.section8-stat-card:nth-child(4) {
+  grid-column: 2 / span 2;
+}
+
+.section8-stat-card:nth-child(5) {
+  grid-column: 4 / span 2;
+}
+
+.section8-stat-number {
+  margin: 0;
+  color: var(--main-red);
+  font-family: "Newsreader", "Noticia Text", Georgia, "Times New Roman", serif;
+  font-size: clamp(2.75rem, 5.2vw, 5.8rem);
+  font-weight: 700;
+  line-height: 0.95;
+}
+
+.section8-stat-label {
+  margin: 40px 0 0;
+  color: #151512;
+  font-family: "Newsreader", "Noticia Text", Georgia, "Times New Roman", serif;
+  font-size: clamp(1.5rem, 2.15vw, 2.35rem);
+  font-weight: 700;
+  line-height: 1.12;
+}
+
+.section8-stat-detail {
+  margin: 20px 0 0;
+  color: #58564f;
+  font-size: clamp(1rem, 1.1vw, 1.12rem);
+  line-height: 1.55;
+}
+
+.section8-conclusion {
+  width: min(1260px, 92%);
+  margin: 54px auto 0;
+  color: #151512;
+  font-family: "Newsreader", "Noticia Text", Georgia, "Times New Roman", serif;
+  font-size: clamp(1.8rem, 3.45vw, 4rem);
+  font-weight: 700;
+  line-height: 1.08;
+}
+
 #section-5 {
   font-family: "Noticia Text", serif;
   padding: 80px 0 120px;
@@ -1086,5 +1170,29 @@ iframe {
     width: 100%;
     max-width: 100%;
     height: auto;
+  }
+
+  .section8-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .section8-stat-card,
+  .section8-stat-card:nth-child(4),
+  .section8-stat-card:nth-child(5) {
+    grid-column: auto;
+  }
+
+  .section8-stat-card {
+    min-height: 220px;
+  }
+}
+
+@media (max-width: 620px) {
+  .section8-stat-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section8-stat-card {
+    min-height: auto;
   }
 }
