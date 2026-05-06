@@ -27,7 +27,7 @@ export function runSection7(allData) {
             yMax: 2,
             title: "Are detainees primarily linked to national security threats?",
             subtitle: "The terrorism flag barely appears in the detention records.",
-            annotation: "Almost none of the yearly bars even approach 1%.",
+            annotation: "None of the yearly bars even approach 1%.",
             emphasis: "solid"
         },
         {
@@ -44,8 +44,8 @@ export function runSection7(allData) {
             color: palette.terror,
             yMax: 6,
             title: "What about serious criminal history?",
-            subtitle: "Using the felon field, the bars grow, but they still do not dominate.",
-            annotation: "This is the first noticeable jump, yet it remains a small minority.",
+            subtitle: "Using the felon field, the bars shrink.",
+            annotation: "Percentage of felons remains a small minority.",
             emphasis: "solid"
         },
         {
@@ -62,7 +62,7 @@ export function runSection7(allData) {
             color: palette.noFlags,
             yMax: 100,
             title: "Most detainees have no recorded criminal or security flags.",
-            subtitle: "After peeling back each assumption, the largest group is the residual with no recorded flags.",
+            subtitle: "After peeling back each assumption, the largest group has no recorded flags.",
             annotation: "This is the majority group in every year shown.",
             emphasis: "solid"
         }

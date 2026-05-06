@@ -446,7 +446,7 @@ function syncNarrative(copyHost) {
         {
             kicker: "Step 1",
             title: "Birth Country Heat Map",
-            body: "We first begin with the following map that depicts the ratio of detainee born in a specific country."
+            body: "We first begin with the following map that depicts the number of detainees born in a specific country."
         },
         {
             kicker: "Step 2",
@@ -456,7 +456,7 @@ function syncNarrative(copyHost) {
         {
             kicker: "Step 3",
             title: "Citizenship to Departure Paths",
-            body: "Each line shows a departure country that has no relevance to the detainee as it doesn't match either their birth country or citizenship country. Ideally, the detainee shouldn't be deported to an unfamiliar country."
+            body: "Each line shows a person who was deported to a country that does not match either their birth country or citizenship country. Ideally, the detainee shouldn't be deported to an unfamiliar country."
         }
     ];
 

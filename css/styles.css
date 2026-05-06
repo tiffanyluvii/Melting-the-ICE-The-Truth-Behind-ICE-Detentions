@@ -298,6 +298,7 @@ iframe {
 }
 
 .section-2-vis #detention-scale-vis {
+  position: relative;
   padding: 18px 16px 12px;
   border: 1px solid rgba(47, 39, 28, 0.1);
   border-radius: 10px;
@@ -357,6 +358,52 @@ iframe {
 #detention-scale-vis .tick text,
 #detention-scale-vis .legend text {
   font-family: "Noticia Text", serif;
+}
+
+#detention-scale-vis .section2-point {
+  cursor: pointer;
+  opacity: 0.82;
+  stroke: #fff;
+  stroke-width: 1.4px;
+  transition: opacity 0.15s ease;
+}
+
+#detention-scale-vis .section2-point:hover,
+#detention-scale-vis .section2-point:focus {
+  opacity: 1;
+  outline: none;
+}
+
+.section2-tooltip {
+  position: absolute;
+  z-index: 3;
+  min-width: 170px;
+  max-width: min(300px, 86vw);
+  padding: 10px 12px;
+  border: 1.5px solid rgba(47, 39, 28, 0.22);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 10px 24px rgba(31, 31, 27, 0.14);
+  color: #2f271c;
+  text-align: left;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.section2-tooltip strong,
+.section2-tooltip span {
+  display: block;
+}
+
+.section2-tooltip strong {
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+}
+
+.section2-tooltip span {
+  font-size: 0.88rem;
+  line-height: 1.45;
 }
 
 #section-3{
