@@ -306,7 +306,7 @@ function buildNarrativeSteps() {
     return [
         {
             title: "Detention is often assumed to lead directly to deportation.",
-            body: "We begin with the outcome most often imagined when ICE detention is discussed.",
+            body: "This is the most commonly imagined outcome involving ICE detention.",
             centerLabel: "Removed / Deported",
             centerValue: data => formatOutcomePercent(data, "Removed / Deported"),
             revealThrough: 0
@@ -319,7 +319,7 @@ function buildNarrativeSteps() {
             revealThrough: 1
         },
         {
-            title: "Some receive relief or permission to stay.",
+            title: "A small number of people receive relief or permission to stay.",
             body: "The records also include outcomes where people are granted relief or permanent residence.",
             centerLabel: "Relief Granted",
             centerValue: data => formatOutcomePercent(data, "Relief Granted / Allowed to Stay"),

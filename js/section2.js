@@ -4,8 +4,56 @@ export function runSection2(biden_data, trump_data, main_red, main_blue){
     const height = 500;
     const chartWidth = 800;
     const chartHeight = 300;
+    const formatMonth = d3.timeFormat("%B %Y");
+    const formatCount = d3.format(",");
 
-    const detention_scale_svg = d3.select("#detention-scale-vis")
+    const chartHost = d3.select("#detention-scale-vis");
+    chartHost.selectAll(".section2-tooltip").remove();
+
+    const tooltip = chartHost.append("div")
+        .attr("class", "section2-tooltip")
+        .attr("aria-hidden", "true");
+
+    function hideTooltip() {
+        tooltip
+            .style("opacity", 0)
+            .attr("aria-hidden", "true");
+    }
+
+    function showTooltip(event, d, target) {
+        const hostRect = chartHost.node().getBoundingClientRect();
+        const tooltipNode = tooltip.node();
+        const pointColor = d.administration === "Biden" ? main_blue : main_red;
+        const targetRect = target ? target.getBoundingClientRect() : null;
+        const pointerX = event.clientX || (targetRect ? targetRect.left + targetRect.width / 2 : hostRect.left);
+        const pointerY = event.clientY || (targetRect ? targetRect.top + targetRect.height / 2 : hostRect.top);
+
+        tooltip
+            .html(`
+                <strong style="color: ${pointColor}">${d.administration}</strong>
+                <span>${formatMonth(d.date)}</span>
+                <span>${formatCount(d.count)} ICE administrative arrests</span>
+            `)
+            .style("opacity", 1)
+            .attr("aria-hidden", "false");
+
+        const tooltipWidth = tooltipNode.offsetWidth;
+        const tooltipHeight = tooltipNode.offsetHeight;
+        const left = Math.min(
+            Math.max(pointerX - hostRect.left + 14, 8),
+            hostRect.width - tooltipWidth - 8
+        );
+        const top = Math.min(
+            Math.max(pointerY - hostRect.top - tooltipHeight - 14, 8),
+            hostRect.height - tooltipHeight - 8
+        );
+
+        tooltip
+            .style("left", `${left}px`)
+            .style("top", `${top}px`);
+    }
+
+    const detention_scale_svg = chartHost
         .append("svg")
         .attr("class", "section-2-chart-svg")
         .attr("viewBox", `0 0 ${width} ${height}`)
@@ -87,6 +135,34 @@ export function runSection2(biden_data, trump_data, main_red, main_blue){
         .attr("stroke", main_red)
         .attr("stroke-width", 2)
         .attr("d", trump_line);
+
+    const pointData = [
+        ...biden_detention_map.map(d => ({ ...d, administration: "Biden", color: main_blue })),
+        ...trump_detention_map.map(d => ({ ...d, administration: "Trump", color: main_red }))
+    ];
+
+    scale_g.append("g")
+        .attr("class", "section2-points")
+        .selectAll("circle")
+        .data(pointData)
+        .enter()
+        .append("circle")
+        .attr("class", "section2-point")
+        .attr("cx", d => x_scale(d.date))
+        .attr("cy", d => y_scale(d.count))
+        .attr("r", 4)
+        .attr("fill", d => d.color)
+        .attr("tabindex", 0)
+        .attr("aria-label", d => `${d.administration}, ${formatMonth(d.date)}, ${formatCount(d.count)} ICE administrative arrests`)
+        .on("mouseenter focus", function(event, d) {
+            d3.select(this).attr("r", 6);
+            showTooltip(event, d, this);
+        })
+        .on("mousemove", showTooltip)
+        .on("mouseleave blur", function() {
+            d3.select(this).attr("r", 4);
+            hideTooltip();
+        });
 
     const bidenTransitionPoint = biden_detention_map[biden_detention_map.length - 1];
     const trumpTransitionPoint = trump_detention_map[0];
