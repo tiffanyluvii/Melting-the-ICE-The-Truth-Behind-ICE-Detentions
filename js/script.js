@@ -3,6 +3,7 @@ import { runSection2 } from "./section2.js"
 import { runSection3 } from "./section3.js"
 import { runSection4 } from "./section4.js"
 import { runSection5 } from "./section5.js"
+import { runSection6 } from "./section6.js"
 import { runSection7 } from "./section7.js"
 import { runSection8 } from "./section8.js"
 
@@ -39,9 +40,13 @@ runSection3(trump_data, world_geojson)
 
 // Section 4: ICE Apprension Methods Change Over Time
 runSection4()
+
 // Section 5: Case Outcomes
 const all_data = [...biden_data, ...trump_data];
 runSection5(all_data)
+
+// Section 6: Detention Duration and Demographics
+runSection6(all_data)
 
 // Section 7: Security Risk Labels
 runSection7(all_data)
