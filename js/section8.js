@@ -20,6 +20,11 @@ const STAT_SUMMARY = [
         detail: "1/3 still in the system"
     },
     {
+        number: "44 days",
+        label: "Average detention length",
+        detail: "The typical detention stay lasts nearly two months"
+    },
+    {
         number: "<2%",
         label: "Labeled high-risk yearly",
         detail: "Terrorist, suspected gang member, or serious criminal"
