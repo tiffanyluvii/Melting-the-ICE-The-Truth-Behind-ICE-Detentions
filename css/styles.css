@@ -1364,3 +1364,11 @@ iframe {
     min-height: auto;
   }
 }
+
+
+#data-source {
+  font-size: 12px;
+  color: gray;
+  text-align: center;
+  opacity: 70%;
+}
