@@ -9,12 +9,12 @@ import { runSection8 } from "./section8.js"
 
 // Load the CSVs and other important attributes
 const parseDate = d3.timeParse("%Y-%m-%d")
-const biden_data = await d3.csv("./data/detention-stays_filtered_biden_cleaned.csv", d => ({
+const biden_data = await d3.csv("https://firebasestorage.googleapis.com/v0/b/melting-the-ice.firebasestorage.app/o/detention-stays_filtered_biden_cleaned.csv?alt=media", d => ({
   ...d,
   date: parseDate(d.date)
 }))
 
-const trump_data = await d3.csv("./data/detention-stays_filtered_trump_cleaned.csv", d => ({
+const trump_data = await d3.csv("https://firebasestorage.googleapis.com/v0/b/melting-the-ice.firebasestorage.app/o/detention-stays_filtered_trump_cleaned.csv?alt=media", d => ({
   ...d,
   date: parseDate(d.date)
 }))
