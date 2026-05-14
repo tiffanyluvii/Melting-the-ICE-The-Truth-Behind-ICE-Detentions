@@ -792,14 +792,6 @@ iframe {
   will-change: opacity, transform;
 }
 
-.section8-stat-card:nth-child(4) {
-  grid-column: 2 / span 2;
-}
-
-.section8-stat-card:nth-child(5) {
-  grid-column: 4 / span 2;
-}
-
 .section8-stat-number {
   margin: 0;
   color: var(--main-red);
@@ -1318,9 +1310,7 @@ iframe {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .section8-stat-card,
-  .section8-stat-card:nth-child(4),
-  .section8-stat-card:nth-child(5) {
+  .section8-stat-card {
     grid-column: auto;
   }
 
